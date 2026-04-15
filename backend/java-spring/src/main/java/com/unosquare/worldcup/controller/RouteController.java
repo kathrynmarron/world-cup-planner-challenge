@@ -36,9 +36,9 @@ public class RouteController {
     // ============================================================
     @PostMapping("/optimise")
     public OptimisedRouteDTO optimise(@RequestBody OptimiseRequestDTO request) {
-        // TODO: Implement this endpoint
-        // Hint: Call routeService.optimise() with the match IDs and origin city ID from the request
-        return null;
+        //connecting 'Plan My Route' POST request to service layer, passing list of selected match IDs and
+        //starting city ID to the strategy
+        return routeService.optimise(request.getMatchIds(), request.getOriginCityId());
     }
 
     // ============================================================

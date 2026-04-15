@@ -4,6 +4,7 @@ import com.unosquare.worldcup.dto.MatchWithCityDTO;
 import com.unosquare.worldcup.dto.OptimisedRouteDTO;
 import com.unosquare.worldcup.model.City;
 import com.unosquare.worldcup.model.Team;
+import com.unosquare.worldcup.repository.CityRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
