@@ -34,8 +34,8 @@ public class CityService {
     // ============================================================
 
     public List<City> getAllCities() {
-        // TODO: Implement this method to return all cities
-        // Hint: Use cityRepository.findAll()
-        return new ArrayList<>();
+        //TASK #1 implementation - using findAll method to retrieve host city records from the data.sql file
+        //so frontend has full list of host cities for route planner
+        return cityRepository.findAll();
     }
 }

@@ -35,9 +35,9 @@ public class CityController {
     //
 
     @GetMapping
-    public List<City> getAll() {
-        // TODO: Implement this endpoint to return all cities
-        // Hint: Use cityService.getAllCities()
-        return null;
+    public List<City> getAllCities() {
+        //TASK #1 implementation - delegating the data retrieval to CityService to
+        //maintain a clean separation of concerns between the API layer and business logic
+        return cityService.getAllCities();
     }
 }
