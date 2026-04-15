@@ -41,15 +41,22 @@ public class MatchService {
     //
     // ============================================================
     public List<MatchWithCityDTO> getMatches(String city, LocalDate date) {
-        // TODO: Implement this method
-        //
-        // Steps:
-        //   1. If city is provided, use matchRepository.findByCityId(city)
-        //      Otherwise use matchRepository.findAllOrderByKickoff()
-        //   2. If date is provided, filter matches by kickoff date
-        //   3. Convert Match entities to MatchWithCityDTO using MatchWithCityDTO.fromEntity()
-        //
-        return new ArrayList<>();
+        List<Match> matches;
+
+        //check first if a city ID was provided. If yes, use the repository
+        //to find matches for that city...if no, get all matches
+        if (city != null && !city.isEmpty()) {
+            matches = matchRepository.findByCityId(city);
+        } else {
+            matches = matchRepository.findAllOrderByKickoff();
+        }
+
+        //filter results by date (if user picks one) and convert Match entities
+        //into DTOs so the frontend can display
+        return matches.stream()
+                .filter(match -> date == null || match.getKickoff().toLocalDate().equals(date))
+                .map(MatchWithCityDTO::fromEntity)
+                .toList();
     }
 
     /**
