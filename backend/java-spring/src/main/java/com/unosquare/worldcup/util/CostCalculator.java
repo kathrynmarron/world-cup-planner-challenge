@@ -85,23 +85,61 @@ public class CostCalculator {
             List<FlightPrice> flightPrices,
             City originCity
     ) {
-        // TODO: Implement this method
-        //
-        // Steps:
-        //   1. Sort matches by kickoff date
-        //   2. Find countries visited (from match cities)
-        //   3. Find missing countries (compare against REQUIRED_COUNTRIES)
-        //   4. Calculate costs using helper methods:
-        //      - ticketsCost = calculateTicketsCost(sortedMatches)
-        //      - flightsCost = calculateFlightsCost(originCity, sortedMatches, flightPrices)
-        //      - accommodationCost = calculateAccommodationCost(sortedMatches)
-        //   5. Build CostBreakdownDTO with the costs
-        //   6. Determine feasibility: no missing countries AND totalCost <= budget
-        //   7. Generate suggestions using generateSuggestions() helper
-        //   8. Build route using BuildRouteUtil.buildRoute(sortedMatches, "budget-optimised")
-        //   9. Return BudgetResultDTO with all the data
-        //
-        return null;
+        if (matches == null || matches.isEmpty()) {
+            BudgetResultDTO empty = new BudgetResultDTO();
+            empty.setFeasible(false);
+            empty.setSuggestions(List.of("Please select at least one match."));
+            return empty;
+        }
+
+        //1. sort matches by kickoff date
+        List<MatchWithCityDTO> sortedMatches = matches.stream()
+                .sorted(Comparator.comparing(MatchWithCityDTO::getKickoff))
+                .collect(Collectors.toList());
+
+        //2. find countries visited
+        Set<String> visitedCountries = sortedMatches.stream()
+                .map(m -> m.getCity().getCountry())
+                .collect(Collectors.toSet());
+
+        //3. find missing countries
+        List<String> missingCountries = REQUIRED_COUNTRIES.stream()
+                .filter(c -> !visitedCountries.contains(c))
+                .collect(Collectors.toList());
+
+        //4. calculate costs using provided helper methods
+        double ticketsCost = calculateTicketsCost(sortedMatches);
+        double flightsCost = calculateFlightsCost(originCity, sortedMatches, flightPrices);
+        double accommodationCost = calculateAccommodationCost(sortedMatches);
+        double totalCost = ticketsCost + flightsCost + accommodationCost;
+
+        //5. build CostBreakdownDTO
+        CostBreakdownDTO breakdown = new CostBreakdownDTO();
+        breakdown.setTickets(ticketsCost);
+        breakdown.setFlights(flightsCost);
+        breakdown.setAccommodation(accommodationCost);
+        breakdown.setTotal(totalCost);
+
+        //6. check feasibility: no missing countries AND totalCost <= budget
+        boolean feasible = missingCountries.isEmpty() && totalCost <= budget;
+
+        //7. generate suggestions
+        List<String> suggestions = generateSuggestions(missingCountries, totalCost, budget, sortedMatches);
+
+        //8. build route DTO
+        OptimisedRouteDTO route = BuildRouteUtil.buildRoute(sortedMatches, "budget-optimised");
+
+        //9. return final BudgetResultDTO
+        BudgetResultDTO result = new BudgetResultDTO();
+        result.setFeasible(feasible);
+        result.setRoute(route);
+        result.setCostBreakdown(breakdown);
+        result.setCountriesVisited(new ArrayList<>(visitedCountries));
+        result.setMissingCountries(missingCountries);
+        result.setMinimumBudgetRequired(totalCost);
+        result.setSuggestions(suggestions);
+
+        return result;
     }
 
     /**
