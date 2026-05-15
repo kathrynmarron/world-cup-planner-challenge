@@ -138,22 +138,28 @@ function RouteMap({ route, originCity }: RouteMapProps) {
             <Popup>
               <strong>{firstStop.city.name}</strong>
               <br />
-              <span style={{ fontSize: '0.85em', color: '#666' }}>{firstStop.city.country}</span>
-              <hr style={{ margin: '0.5rem 0', border: 'none', borderTop: '1px solid #ddd' }} />
-              {/* ============================================================
-                  TODO: Render match details for each stop (YOUR TASK)
-                  ============================================================
 
-                  CSS classes to use:
-                    - <div className="popup-match"> for each match
-                    - <span className="popup-match-number"> for stop number
-                    - <span className="popup-match-date"> for the date
-              */}
+              <span style={{ fontSize: '0.85em', color: '#666' }}>
+                  {firstStop.city.country}
+                </span>
+
+              <hr
+                  style={{
+                    margin: '0.5rem 0',
+                    border: 'none',
+                    borderTop: '1px solid #ddd',
+                  }}
+              />
             </Popup>
           </Marker>
         );
-      })}
-      <Polyline positions={positions} color="#e94560" weight={3} />
+          }
+      )}
+      <Polyline
+          positions={positions}
+          color="#e94560"
+          weight={3}
+      />
     </MapContainer>
   );
 }
